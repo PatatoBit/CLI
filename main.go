@@ -4,7 +4,7 @@ Copyright © 2022 NAME HERE <EMAIL ADDRESS>
 */
 package main
 
-import "Patato/cli/cmd"
+import "Patato/pcli/cmd"
 
 func main() {
 	cmd.Execute()

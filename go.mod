@@ -1,4 +1,4 @@
-module Patato/cli
+module Patato/pcli
 
 go 1.18
 

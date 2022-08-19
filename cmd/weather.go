@@ -11,6 +11,8 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strconv"
+	"time"
 
 	"github.com/joho/godotenv"
 	"github.com/spf13/cobra"
@@ -41,7 +43,9 @@ func getWeather() {
 		log.Printf("Error: Could not unmarshal JSON response: %v", err)
 	}
 
-	fmt.Printf("%v's Weather [%v]\nTemperature: %v\nFeels like: %v\nHumidity: %v\nTimezone: %v\n", res.Name, res.Cod, res.Main.Temp, res.Main.Feels_like, res.Main.Humidity, res.Timezone)
+	fmt.Printf("%v's Weather [%v]\nTemperature: %v°C\nFeels like: %v°C\nHumidity: %v%%\n", res.Name, res.Cod, res.Main.Temp-273.15, res.Main.Feels_like-273.15, res.Main.Humidity)
+	// Fix this to date time later
+	fmt.Printf("\nSunrise/Sunset: %v/%v", ParseTime(res.Sys.Sunrise), ParseTime(res.Sys.Sunset))
 }
 
 func getWeatherData(baseAPI string) []byte {
@@ -71,6 +75,18 @@ func getWeatherData(baseAPI string) []byte {
 	return responseBytes
 }
 
+func ParseTime(timestamp int) int {
+
+	stringStamp := strconv.Itoa(timestamp)
+
+	i, err := strconv.ParseInt(stringStamp, 10, 64)
+	if err != nil {
+		panic(err)
+	}
+	tm := time.Unix(i, 0)
+	return tm.Hour()
+}
+
 func goDotEnvVariable(key string) string {
 	// load .env file
 	err := godotenv.Load(".env")
@@ -89,6 +105,11 @@ type WeatherData struct {
 		Humidity   float32 `json:"humidity"`
 		Sea_level  float32 `json:"sea_level"`
 		Grnd_level float32 `json:"grnd_level"`
+	}
+
+	Sys struct {
+		Sunrise int `json:"sunrise"`
+		Sunset  int `json:"sunset"`
 	}
 
 	Timezone int32  `json:"timezone"`

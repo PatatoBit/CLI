@@ -30,9 +30,9 @@ func init() {
 }
 
 func getWeather() {
+	city := goDotEnvVariable("CITY_NAME")
 	key := goDotEnvVariable("API_KEY")
-	city := goDotEnvVariable("CITY_ID")
-	url := fmt.Sprintf("https://api.openweathermap.org/data/2.5/weather?id=%s&appid=%s", city, key)
+	url := fmt.Sprintf("https://api.openweathermap.org/data/2.5/weather?q=%s&appid=%s", city, key)
 	res := WeatherData{}
 
 	reponseBytes := getWeatherData(url)
@@ -41,7 +41,7 @@ func getWeather() {
 		log.Printf("Error: Could not unmarshal JSON response: %v", err)
 	}
 
-	fmt.Printf("%v's Weather\nTemperature: %v\nFeels like: %v\nHumidity: %v\nTimezone: %v\n", res.Name, res.Main.Temp, res.Main.Feels_like, res.Main.Humidity, res.Timezone)
+	fmt.Printf("%v's Weather [%v]\nTemperature: %v\nFeels like: %v\nHumidity: %v\nTimezone: %v\n", res.Name, res.Cod, res.Main.Temp, res.Main.Feels_like, res.Main.Humidity, res.Timezone)
 }
 
 func getWeatherData(baseAPI string) []byte {
@@ -93,5 +93,5 @@ type WeatherData struct {
 
 	Timezone int32  `json:"timezone"`
 	Name     string `json:"name"`
-	Cod      int    `json:"cod"`
+	Cod      int32  `json:"cod"`
 }

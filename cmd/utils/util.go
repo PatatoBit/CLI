@@ -1,9 +1,12 @@
-package fetch
+package util
 
 import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"os"
+
+	"github.com/joho/godotenv"
 )
 
 func FetchJSONData(baseAPI string) []byte {
@@ -31,4 +34,13 @@ func FetchJSONData(baseAPI string) []byte {
 	}
 
 	return responseBytes
+}
+
+func GoDotEnvVariable(key string) string {
+	// load .env file
+	err := godotenv.Load(".env")
+	if err != nil {
+		fmt.Println("Error loading .env file")
+	}
+	return os.Getenv(key)
 }

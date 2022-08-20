@@ -5,8 +5,11 @@ Copyright © 2022 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
-	env "Patato/pcli/cmd/funcs/env"
-	fetch "Patato/pcli/cmd/funcs/fetch"
+	util "Patato/pcli/cmd/utils"
+
+	// env "Patato/pcli/cmd/funcs/env"
+
+	// fetch "Patato/pcli/cmd/funcs/fetch"
 	"encoding/json"
 	"fmt"
 
@@ -29,13 +32,13 @@ func init() {
 
 func getForecast() {
 	// Reads env file
-	key := env.GoDotEnvVariable("API_KEY")
-	lat := env.GoDotEnvVariable("LAT")
-	lon := env.GoDotEnvVariable("LON")
+	key := util.GoDotEnvVariable("API_KEY")
+	lat := util.GoDotEnvVariable("LAT")
+	lon := util.GoDotEnvVariable("LON")
 	url := fmt.Sprintf("https://api.openweathermap.org/data/2.5/forecast?lat=%s&lon=%s&appid=%s", lat, lon, key)
 	res := ForcastData{}
 
-	responseBytes := fetch.FetchJSONData(url)
+	responseBytes := util.FetchJSONData(url)
 	if err := json.Unmarshal(responseBytes, &res); err != nil {
 		fmt.Printf("Error: Could not unmarshal JSON response: %v", err)
 	}

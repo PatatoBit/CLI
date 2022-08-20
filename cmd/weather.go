@@ -5,16 +5,13 @@ Copyright © 2022 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
+	env "Patato/pcli/cmd/funcs/env"
+	fetch "Patato/pcli/cmd/funcs/fetch"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
-	"log"
-	"net/http"
-	"os"
 	"strconv"
 	"time"
 
-	"github.com/joho/godotenv"
 	"github.com/spf13/cobra"
 )
 
@@ -32,47 +29,20 @@ func init() {
 }
 
 func getWeather() {
-	city := goDotEnvVariable("CITY_NAME")
-	key := goDotEnvVariable("API_KEY")
+	city := env.GoDotEnvVariable("CITY_NAME")
+	key := env.GoDotEnvVariable("API_KEY")
 	url := fmt.Sprintf("https://api.openweathermap.org/data/2.5/weather?q=%s&appid=%s", city, key)
 	res := WeatherData{}
 
-	reponseBytes := getWeatherData(url)
+	reponseBytes := fetch.FetchJSONData(url)
 
 	if err := json.Unmarshal(reponseBytes, &res); err != nil {
-		log.Printf("Error: Could not unmarshal JSON response: %v", err)
+		fmt.Printf("Error: Could not unmarshal JSON response: %v", err)
 	}
 
 	fmt.Printf("%v's Weather [%v]\nTemperature: %v°C\nFeels like: %v°C\nHumidity: %v%%\n", res.Name, res.Cod, res.Main.Temp-273.15, res.Main.Feels_like-273.15, res.Main.Humidity)
 	// Fix this to date time later
 	fmt.Printf("\nSunrise/Sunset: %v/%v", ParseTime(res.Sys.Sunrise), ParseTime(res.Sys.Sunset))
-}
-
-func getWeatherData(baseAPI string) []byte {
-	request, err := http.NewRequest(
-		http.MethodGet,
-		baseAPI,
-		nil,
-	)
-
-	if err != nil {
-		log.Printf("Error %v", err)
-	}
-
-	request.Header.Add("Accept", "application/json")
-	request.Header.Add("User-Agent", "Dadjoke CLI (github.com/PathonScript/CLI)")
-
-	response, err := http.DefaultClient.Do(request)
-	if err != nil {
-		log.Printf("Error %v", err)
-	}
-
-	responseBytes, err := ioutil.ReadAll(response.Body)
-	if err != nil {
-		log.Printf("Error %v", err)
-	}
-
-	return responseBytes
 }
 
 func ParseTime(timestamp int) int {
@@ -85,15 +55,6 @@ func ParseTime(timestamp int) int {
 	}
 	tm := time.Unix(i, 0)
 	return tm.Hour()
-}
-
-func goDotEnvVariable(key string) string {
-	// load .env file
-	err := godotenv.Load(".env")
-	if err != nil {
-		log.Fatalf("Error loading .env file")
-	}
-	return os.Getenv(key)
 }
 
 type WeatherData struct {

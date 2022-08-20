@@ -8,6 +8,7 @@ import (
 	util "Patato/pcli/cmd/utils"
 	"encoding/json"
 	"fmt"
+	"math"
 	"strconv"
 	"time"
 
@@ -39,7 +40,7 @@ func getWeather() {
 		fmt.Printf("Error: Could not unmarshal JSON response: %v", err)
 	}
 
-	fmt.Printf("%v's Weather [%v]\nTemperature: %v°C\nFeels like: %v°C\nHumidity: %v%%\n", res.Name, res.Cod, res.Main.Temp-273.15, res.Main.Feels_like-273.15, res.Main.Humidity)
+	fmt.Printf("%v's Weather [%v]\nTemperature: %v°C\nFeels like: %v°C\nHumidity: %v%%\n", res.Name, res.Cod, math.Round(((res.Main.Temp-273.15)*100)/100), math.Round(((res.Main.Feels_like-273.15)*100)/100), res.Main.Humidity)
 	// Fix this to date time later
 	fmt.Printf("\nSunrise/Sunset: %v/%v", ParseTime(res.Sys.Sunrise), ParseTime(res.Sys.Sunset))
 }
@@ -58,8 +59,8 @@ func ParseTime(timestamp int) int {
 
 type WeatherData struct {
 	Main struct {
-		Temp       float32 `json:"temp"`
-		Feels_like float32 `json:"feels_like"`
+		Temp       float64 `json:"temp"`
+		Feels_like float64 `json:"feels_like"`
 		Temp_min   float32 `json:"temp_min"`
 		Pressure   float32 `json:"pressure"`
 		Humidity   float32 `json:"humidity"`

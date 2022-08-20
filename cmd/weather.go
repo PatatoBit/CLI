@@ -34,9 +34,9 @@ func getWeather() {
 	url := fmt.Sprintf("https://api.openweathermap.org/data/2.5/weather?q=%s&appid=%s", city, key)
 	res := WeatherData{}
 
-	reponseBytes := fetch.FetchJSONData(url)
+	responseBytes := fetch.FetchJSONData(url)
 
-	if err := json.Unmarshal(reponseBytes, &res); err != nil {
+	if err := json.Unmarshal(responseBytes, &res); err != nil {
 		fmt.Printf("Error: Could not unmarshal JSON response: %v", err)
 	}
 

@@ -8,7 +8,6 @@ import (
 	util "Patato/pcli/cmd/utils"
 	"encoding/json"
 	"fmt"
-	"math"
 	"strconv"
 	"time"
 
@@ -40,7 +39,7 @@ func getWeather() {
 		fmt.Printf("Error: Could not unmarshal JSON response: %v", err)
 	}
 
-	fmt.Printf("%v's Weather [%v]\nTemperature: %v°C\nFeels like: %v°C\nHumidity: %v%%\n", res.Name, res.Cod, math.Round(((res.Main.Temp-273.15)*100)/100), math.Round(((res.Main.Feels_like-273.15)*100)/100), res.Main.Humidity)
+	fmt.Printf("%v's Weather [%v]\nTemperature: %v°C\nFeels like: %v°C\nHumidity: %v%%\n", res.Name, res.Cod, util.ParseTemp(res.Main.Temp), util.ParseTemp(res.Main.Feels_like), res.Main.Humidity)
 	// Fix this to date time later
 	fmt.Printf("\nSunrise/Sunset: %v/%v", ParseTime(res.Sys.Sunrise), ParseTime(res.Sys.Sunset))
 }

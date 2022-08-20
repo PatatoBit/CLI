@@ -3,6 +3,7 @@ package util
 import (
 	"fmt"
 	"io/ioutil"
+	"math"
 	"net/http"
 	"os"
 
@@ -43,4 +44,9 @@ func GoDotEnvVariable(key string) string {
 		fmt.Println("Error loading .env file")
 	}
 	return os.Getenv(key)
+}
+
+func ParseTemp(temp float64) float64 {
+	ans := math.Round(((temp - 273.15) * 100) / 100)
+	return ans
 }

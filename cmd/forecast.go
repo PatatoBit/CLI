@@ -7,9 +7,6 @@ package cmd
 import (
 	util "Patato/pcli/cmd/utils"
 
-	// env "Patato/pcli/cmd/funcs/env"
-
-	// fetch "Patato/pcli/cmd/funcs/fetch"
 	"encoding/json"
 	"fmt"
 
@@ -43,7 +40,11 @@ func getForecast() {
 		fmt.Printf("Error: Could not unmarshal JSON response: %v", err)
 	}
 
-	fmt.Println(res.List[0])
+	for i := 0; i < len(res.List); i++ {
+
+		fmt.Printf("Temperature %v°C, Feels Like %v°C, Humidity %v%%\n\n", util.ParseTemp(res.List[i].Main.Temp), util.ParseTemp(res.List[i].Main.Feels_like), res.List[i].Main.Humidity)
+	}
+
 }
 
 type ForcastData struct {
